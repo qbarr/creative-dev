@@ -151,36 +151,37 @@ const update = () => {
 
     }
 
-    function univers2(x, y, colors) {
+    function univers2(x, y, colors,rayon) {
         let steps = 1000
         let scale = 20
         let frequency = 2
         ctx.save()
         ctx.translate(x, y)
+        ctx.rotate(Math.sin(time))
+
         ctx.beginPath()
-        ctx.rotate(time*phi)
+      //  ctx.rotate(time*phi)
         
 
         for (let i = 0; i < steps; i++) {
             let progress = i / steps
             let angle = 2 * Math.PI * progress
-            let rayon = (1+ (Math.sin(time *5))*.5) * 300
+          //  let rayon = 300
           //  console.log(radius);
         /*     let n = simplex.noise4D(time, Math.cos(angle * frequency), Math.sin(angle * frequency), x * .2) * 50
             scale = (20 + (x * 20)) + n */
             
             scale = rayon+ (Math.sin(angle * 4) *80)
             ctx.lineTo(Math.cos(angle) *scale , Math.sin(angle) *scale )
-          //  ctx.rotate(Math.sin(angle)*time)
+          // ctx.rotate(100)
 
            // ctx.lineWidth = 10
             // ctx.arc(0 ,0, radius *300,0,Math.PI *2)
 
         }
         ctx.lineTo(Math.cos(Math.PI * 2) * scale, Math.sin(Math.PI * 2) * scale)
-            ctx.rotate(10)
 
-        ctx.strokeStyle = Math.random() >0.5 ? '#000fff':'#aaeeff'
+        ctx.strokeStyle = Math.random() >0 ? '#000fff':'#aaeeff'
         ctx.stroke()
       
 
@@ -218,24 +219,28 @@ const update = () => {
     // univers(canvas.width * 0.5, canvas.height * 0.5, colorsBlue)
     //    univers(canvas.width*0.75,canvas.height*0.75,colorsRed)
     univers(canvas.width * 0.5, canvas.height * 0.5, colorsBlue)
-    univers2(canvas.width * 0.5, canvas.height * 0.5, colorsRed)
-    univers2(canvas.width * 0.9, canvas.height * 0.5, colorsRed)
-    univers2(canvas.width * 0.1, canvas.height * 0.5, colorsRed)
+    for(let i=0;i<10;i++) {
+        
+        univers2(canvas.width * 0.5, canvas.height * 0.5, colorsRed,i*300)
 
-    function triangle(i,j,size) {
+    }
+    // univers2(canvas.width * 0.9, canvas.height * 0.5, colorsRed)
+    // univers2(canvas.width * 0.1, canvas.height * 0.5, colorsRed)
+
+    /* function triangle(i,j,size) {
         ctx.save()
         ctx.beginPath()
         ctx.fillStyle='#fff'
         ctx.moveTo(i,j)
-        ctx.lineTo(i+size,i+30)
-        ctx.lineTo(i-size,i+30)
-        ctx.lineTo(i,i+30)
+        ctx.lineTo(i-20,j+size)
+        ctx.lineTo(i+20,j+size)
+        ctx.lineTo(i,j)
         ctx.fill()
         ctx.closePath()
         ctx.restore()
     }
 
-    triangle(40,40,40)
+    triangle(canvas.width/2,canvas.height/2-170,40) */
    
     requestAnimationFrame(update)
 }
