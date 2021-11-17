@@ -58,7 +58,6 @@ let simplex = new SimplexNoise()
 
 
 
-let point1 = new Point(0, cH2, ctx)
 
 let point2 = new Point(0, cH2, ctx)
 
@@ -75,13 +74,22 @@ let time = 0
 const colorsBlue = ['#000fff', '#0aafff', '#0cefff', '#00012f', '#340fff', '#2b7fff', '#000ebf', '#0001ff', '#002fff', '#123fff', '234fff']
 const colorsRed = ['#360000', '#750000', '#B50000', '#C20000', '#9C0000']
 let randColor = true
-const update = () => {
+let rayonUnivers = 50 
+let transition = false 
+document.addEventListener('keydown',(e)=>{
+    if(e.code==="Space") {    
+        rayonUnivers===50 ? rayonUnivers+=200  : rayonUnivers-=200 
+        // rayonUnivers+=time 
+        // transition = !transition
+    }   
 
+})
+
+const update = () => {
 
     const mouseX = ((Mouse.cursor[0] + 1) / 2) * canvas.width
     const mouseY = ((Mouse.cursor[1] + 1) / 2) * canvas.height
-
-
+  
     //  randColor = !randColor
 
 
@@ -118,24 +126,25 @@ const update = () => {
     const phi = 1.618033988749895
     time += .03
 
-    ctx.fillStyle=`rgba(0,0,0,0.3)`
+    ctx.fillStyle = `rgba(0,0,0,0.3)`
     ctx.fillRect(0, 0, canvasWidth, canvasHeight)
 
-    function univers(x, y, colors) {
+    function univers(x, y, colors,rayon) {
         let steps = 1000
         let scale = 5
-        let frequency = 2
-   
+        let frequency = 2 
+
         for (let i = 4; i >= 0; i--) {
-            ctx.save()
+            ctx.save() 
             ctx.translate(x, y)
             ctx.beginPath()
 
             for (let x = 0; x < steps; x++) {
                 let progress = x / steps
                 let angle = 2 * Math.PI * progress
-                let n = simplex.noise4D(time, Math.cos(angle * frequency), Math.sin(angle * frequency), i * .2) * 50
-                scale = (20 + (i * 20)) + n
+             //   let newRayon = transition ? rayon*10+time : rayon
+                let n = simplex.noise4D(time, Math.cos(angle * frequency), Math.sin(angle * frequency), i * .2) * rayon
+                scale = (50 + (i * 20)) + n
                 ctx.lineTo(Math.cos(angle) * scale, Math.sin(angle) * scale)
             }
             ctx.lineTo(Math.cos(Math.PI * 2) * scale, Math.sin(Math.PI * 2) * scale)
@@ -151,45 +160,56 @@ const update = () => {
 
     }
 
-    function univers2(x, y, colors,rayon) {
+    function univers2(x, y, colors, rayon) {
         let steps = 1000
         let scale = 20
         let frequency = 2
         ctx.save()
         ctx.translate(x, y)
-        ctx.rotate(Math.sin(time))
+        ctx.rotate(Math.cos(time *Math.random()))
 
         ctx.beginPath()
-      //  ctx.rotate(time*phi)
-        
+        //  ctx.rotate(time*phi)
 
+        
         for (let i = 0; i < steps; i++) {
             let progress = i / steps
             let angle = 2 * Math.PI * progress
-          //  let rayon = 300
-          //  console.log(radius);
-        /*     let n = simplex.noise4D(time, Math.cos(angle * frequency), Math.sin(angle * frequency), x * .2) * 50
-            scale = (20 + (x * 20)) + n */
-            
-            scale = rayon+ (Math.sin(angle * 4) *80)
-            ctx.lineTo(Math.cos(angle) *scale , Math.sin(angle) *scale )
-          // ctx.rotate(100)
+            //  let rayon = 300
+            //  console.log(radius);
+            /*     let n = simplex.noise4D(time, Math.cos(angle * frequency), Math.sin(angle * frequency), x * .2) * 50
+                scale = (20 + (x * 20)) + n */
+                if (Math.abs(mouseX - a) < 500 && Math.abs(mouseY - a) < 500) {
+                    //rayon<400 ? rayon += time *.1 : 300
 
-           // ctx.lineWidth = 10
+                }
+          
+            scale = rayon + (Math.sin(angle * 4) * 80)
+            let a = Math.cos(angle) * scale
+            let b = Math.sin(angle) * scale
+            //  console.log(Math.abs(mouseX,a))
+            
+            ctx.lineTo(a, b)
+
+
+            // ctx.rotate(100)
+
+            // ctx.lineWidth = 10
             // ctx.arc(0 ,0, radius *300,0,Math.PI *2)
 
         }
         ctx.lineTo(Math.cos(Math.PI * 2) * scale, Math.sin(Math.PI * 2) * scale)
 
-        ctx.strokeStyle = Math.random() >0 ? '#000fff':'#aaeeff'
+        ctx.strokeStyle = Math.random() > 0.5 ? '#000fff' : '#aaeeff'
         ctx.stroke()
-      
+
 
         ctx.closePath()
         ctx.restore()
 
 
     }
+
 
 
     /*   function darwArrowLookingAt(angle, radius) {
@@ -218,12 +238,15 @@ const update = () => {
     // univers(canvas.width*0.25,canvas.height*0.25,colorsBlue)
     // univers(canvas.width * 0.5, canvas.height * 0.5, colorsBlue)
     //    univers(canvas.width*0.75,canvas.height*0.75,colorsRed)
-    univers(canvas.width * 0.5, canvas.height * 0.5, colorsBlue)
-    for(let i=0;i<10;i++) {
-        
-        univers2(canvas.width * 0.5, canvas.height * 0.5, colorsRed,i*300)
+    univers(canvas.width * 0.5, canvas.height * 0.5, colorsBlue,rayonUnivers)
+    for (let i = 0; i < 10; i++) {
+
+        univers2(canvas.width * 0.5, canvas.height * 0.5, colorsRed, i * 300)
 
     }
+
+
+  
     // univers2(canvas.width * 0.9, canvas.height * 0.5, colorsRed)
     // univers2(canvas.width * 0.1, canvas.height * 0.5, colorsRed)
 
@@ -241,7 +264,7 @@ const update = () => {
     }
 
     triangle(canvas.width/2,canvas.height/2-170,40) */
-   
+
     requestAnimationFrame(update)
 }
 update()
